@@ -18,6 +18,7 @@ using namespace std;
 
 // A callback function that will be called each time the size of window changed
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow* window);
 
 
 int main(int argc, const char * argv[])
@@ -45,7 +46,7 @@ int main(int argc, const char * argv[])
     // Set the context of this window as the main context of current thread
     glfwMakeContextCurrent(window);
     
-    /** Callback Functions should be registered after creating window and before initializing render loop**/
+    /** Callback Functions should be registered after creating window and before initializing render loop **/
     // Pass the pointer of framebuffer_size_callback to the GLFW
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     
@@ -58,15 +59,19 @@ int main(int argc, const char * argv[])
     
     // Render loop
     while (!glfwWindowShouldClose(window)) {
+        // Check for events;
+        processInput(window);
+        
+        /** Other rendering operations could be done here **/
+        glClearColor(0.2f, 0.2f, 0.5f, 0.2f); // Set color value (R,G,B,A) - Set Status
+        glClear(GL_COLOR_BUFFER_BIT); // Use the color to clear screen - Use Status
+        
         // Update the status of window
         glfwPollEvents();
-        /**
-         * Swap color buffers since double buffers are applied for rendering
-         * // glfwSwapBuffers(window);
-         * This glfwSwapBuffers() is used to swap the double buffer to avoid the screen flickering
-         * However, it infact causes the problem on my Mac for some unknow reasons
-         * This link may be helpful: https://github.com/glfw/glfw/issues/713
-         **/
+        // Swap color buffers since double buffers are applied for rendering
+        /** After updating my MacOS to Mojave10.14.6, this function dose not cause flickering now **/
+        glfwSwapBuffers(window);
+        
     }
     
     glfwTerminate();
@@ -74,7 +79,16 @@ int main(int argc, const char * argv[])
     return 0;
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
     // Reset the size of glViewport
     glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow *window)
+{
+    // Check if key ESCAPE is pressed
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { // If key did not get pressed it will return GLFW_RELEASE
+        glfwSetWindowShouldClose(window, true);
+    }
 }
