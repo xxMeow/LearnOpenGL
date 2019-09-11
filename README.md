@@ -26,6 +26,7 @@
     - `Command Line Tool`
     - Language: `C++`
   - **Global Settings**
+    
     - ![Preferrences](PicREADME/XCodeLocationSetting.png)
   - **Project Settings**
     - Build Settings
@@ -37,9 +38,18 @@
         - `$(glew_header)`
         - `$(glfw_header)`
         - `$(gltools_header)`
+      
     - Build Phases
       - Add following libraries to `Link Binary With Libraries`
         - `OpenGL.framework` 直接选择
         - `libglfw.3.3.dylib` 通过 `Add Other...` 搜索添加
         - `libGLEW.2.1.0.dylib` 通过 `Add Other...` 搜索添加
+      
     - 将glad.c拖入main.cpp所在的目录，选择 `Copy items if needed` ，其它保持默认
+    
+    - Header Include
+    
+      - 在main.cpp的头部导入头文件 `<glad/glad.h>` 和 `<GLFW/glfw3.h>` ，注意glad应放在第一个。如下
+    
+        ![main.cpp](PicREADME/SampleMain.png)
+
