@@ -263,6 +263,7 @@
 		22FA720D2325ED2300632CB7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = V8ZSGRZD89;
 				HEADER_SEARCH_PATHS = (
@@ -284,6 +285,7 @@
 		22FA720E2325ED2300632CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = V8ZSGRZD89;
 				HEADER_SEARCH_PATHS = (
