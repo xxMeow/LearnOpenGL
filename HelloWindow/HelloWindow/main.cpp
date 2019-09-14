@@ -109,23 +109,35 @@ int main(int argc, const char *argv[])
     glDeleteShader(fragmentShader);
     
     /** Setup vertex data **/
-    // Define a triangle's 3 vertices
+    // Define vertices
     // Each vertex includes 3 coordinates (x, y, z:depth), the middle point of space is (0.0, 0.0, 0.0)
-    float vertices[] = { // Define a 2D triangle by set z as 0.0
-        -0.5f, -0.5f, 0.0f, // Left
-         0.5f, -0.5f, 0.0f, // Right
-         0.0f,  0.5f, 0.0f  // Top
+    float vertices[] = {
+        -0.5f,  0.5f, 0.0f, // Top Left
+         0.5f,  0.5f, 0.0f, // Top Right
+         0.5f, -0.5f, 0.0f, // Bottom Right
+        -0.5f, -0.5f, 0.0f  // Bottom Left
+    };
+    // Define the indices of vertices we want
+    unsigned int indices[] = {
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
     };
     
-    unsigned int VAO, VBO;
+    unsigned int VAO, VBO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+    
     // Bind the VAO
     glBindVertexArray(VAO);
     // Bind the VBO
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // glBufferData() will copy datas to the buffer which is being bound right now
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    // Bind the EBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    
     // glVertexAttribPointer() will get each vertex attributes from the VBO which is being bound to GL_ARRAY_BUFFER right now
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -155,8 +167,11 @@ int main(int argc, const char *argv[])
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
         // In fact, we don't need to bind the VAO every render loop here since we only have a single VAO. We just do it so to keep things a bit organized
-        // Tell OpenGL to draw a triangle whose start index of the vertex array is 0 and with 3 vertices (A triangle has 3 vertices..)
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        
+        // Tell OpenGL to draw 6 vertices whose indices are stored in the VBO
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // glDrawElements() will access the elements in the VAO which is being bound right now
+        
         //glBindVertexArray(0); // Again, we don't need to unbind it right now
         
         // Swap color buffers since double buffers are applied for rendering
@@ -169,6 +184,7 @@ int main(int argc, const char *argv[])
     // Optional: De-allocate all resources once they've outlived their purpoose
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
     
     glfwTerminate();
     
