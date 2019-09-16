@@ -14,26 +14,30 @@
 
 using namespace std;
 
-#define WINDOW_WIDTH 400
-#define WINDOW_HEIGHT 400
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 // A callback function that will be called each time the size of window changed
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 
 // The vertex shader and fragment shader must be self-defined
+/** Vertex shader get input from the vertex data directly **/
 const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aColor;\n"
+    "out vec3 ourColor;\n"
     "void main()\n"
     "{\n"
-    "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "    gl_Position = vec4(aPos, 1.0);\n"
+    "    ourColor = aColor;\n"
     "}\0";
 const char *fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
-    "uniform vec4 ourColor;\n"
+    "in vec3 ourColor;\n"
     "void main()\n"
     "{\n"
-    "    FragColor = ourColor;\n"
+    "    FragColor = vec4(ourColor, 1.0);\n"
     "}\n\0";
 
 int main(int argc, const char *argv[])
@@ -114,15 +118,14 @@ int main(int argc, const char *argv[])
     // Define vertices
     // Each vertex includes 3 coordinates (x, y, z:depth), the middle point of space is (0.0, 0.0, 0.0)
     float vertices[] = {
-        -0.5f,  0.5f, 0.0f, // Top Left
-         0.5f,  0.5f, 0.0f, // Top Right
-         0.5f, -0.5f, 0.0f, // Bottom Right
-        -0.5f, -0.5f, 0.0f  // Bottom Left
+        // Position          // Color
+         0.5f, -0.5f, 0.0f,  0.8f, 0.0f, 0.0f, // Right
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.8f, 0.0f, // Left
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 0.8f  // Top
     };
     // Define the indices of vertices we want
     unsigned int indices[] = {
-        0, 1, 3, // First Triangle
-        1, 2, 3  // Second Triangle
+        0, 1, 2 // Triangle
     };
     
     unsigned int VAO, VBO, EBO;
@@ -140,9 +143,15 @@ int main(int argc, const char *argv[])
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     
-    // glVertexAttribPointer() will get each vertex attributes from the VBO which is being bound to GL_ARRAY_BUFFER right now
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    /** glVertexAttribPointer() will get each vertex attributes from the VBO
+     *  void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid * pointer);
+     **/
+    // Position Pointer
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // Color Pointer
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
     
     /** Unbind **/
     // Since glAttribArrayPointer() has registered VBO as the vertex attributes' bound vertex buffer object, now we can unbind it safely
@@ -167,12 +176,6 @@ int main(int argc, const char *argv[])
         
         // Draw triangles
         glUseProgram(shaderProgram); // It actually also enable the shader program
-        
-        // Update the uniform color
-        float timeValue = glfwGetTime();
-        float redValue = sin(timeValue) / 2.0f + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        glUniform4f(vertexColorLocation, redValue, 0.0f, 0.3f, 1.0f);
         
         glBindVertexArray(VAO);
         // In fact, we don't need to bind the VAO every render loop here since we only have a single VAO. We just do it so to keep things a bit organized
