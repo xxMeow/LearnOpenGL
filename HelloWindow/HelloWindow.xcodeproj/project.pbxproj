@@ -27,6 +27,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		221B6920232FD8BD0070DE51 /* Shader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
+		221B6923232FDAD40070DE51 /* VertexShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = VertexShader.glsl; sourceTree = "<group>"; };
+		221B6924232FDAFA0070DE51 /* FragmentShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = FragmentShader.glsl; sourceTree = "<group>"; };
 		22FA72052325ED2300632CB7 /* HelloWindow */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HelloWindow; sourceTree = BUILT_PRODUCTS_DIR; };
 		22FA72082325ED2300632CB7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		22FA72102325ED7B00632CB7 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -49,12 +52,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		221B691F232FD8680070DE51 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				221B6920232FD8BD0070DE51 /* Shader.h */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
 		22FA71FC2325ED2300632CB7 = {
 			isa = PBXGroup;
 			children = (
 				22FA72072325ED2300632CB7 /* HelloWindow */,
-				22FA72062325ED2300632CB7 /* Products */,
+				221B691F232FD8680070DE51 /* Shaders */,
 				22FA720F2325ED7B00632CB7 /* Frameworks */,
+				22FA72062325ED2300632CB7 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +83,8 @@
 			children = (
 				22FA72162325EDA100632CB7 /* glad.c */,
 				22FA72082325ED2300632CB7 /* main.cpp */,
+				221B6923232FDAD40070DE51 /* VertexShader.glsl */,
+				221B6924232FDAFA0070DE51 /* FragmentShader.glsl */,
 			);
 			path = HelloWindow;
 			sourceTree = "<group>";
