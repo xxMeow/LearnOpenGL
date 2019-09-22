@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22C86C6A233334EA00FFF73A /* HeaderProc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22C86C69233334EA00FFF73A /* HeaderProc.cpp */; };
 		22FA72092325ED2300632CB7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22FA72082325ED2300632CB7 /* main.cpp */; };
 		22FA72112325ED7B00632CB7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22FA72102325ED7B00632CB7 /* OpenGL.framework */; };
 		22FA72132325ED8500632CB7 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 22FA72122325ED8500632CB7 /* libglfw.3.3.dylib */; };
@@ -30,6 +31,11 @@
 		221B6920232FD8BD0070DE51 /* Shader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
 		221B6923232FDAD40070DE51 /* VertexShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = VertexShader.glsl; sourceTree = "<group>"; };
 		221B6924232FDAFA0070DE51 /* FragmentShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = FragmentShader.glsl; sourceTree = "<group>"; };
+		22C86C69233334EA00FFF73A /* HeaderProc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HeaderProc.cpp; sourceTree = "<group>"; };
+		22C86C6B2333381100FFF73A /* TextureVertexShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = TextureVertexShader.glsl; sourceTree = "<group>"; };
+		22C86C6C2333382900FFF73A /* TextureFragmentShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = TextureFragmentShader.glsl; sourceTree = "<group>"; };
+		22F8F97323377BCD00408B4A /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
+		22F8F976233790B900408B4A /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
 		22FA72052325ED2300632CB7 /* HelloWindow */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HelloWindow; sourceTree = BUILT_PRODUCTS_DIR; };
 		22FA72082325ED2300632CB7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		22FA72102325ED7B00632CB7 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -52,19 +58,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		221B691F232FD8680070DE51 /* Shaders */ = {
+		221B691F232FD8680070DE51 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
 				221B6920232FD8BD0070DE51 /* Shader.h */,
+				22F8F97323377BCD00408B4A /* stb_image.h */,
 			);
-			path = Shaders;
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		22F8F9752337909A00408B4A /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				22F8F976233790B900408B4A /* container.jpg */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 		22FA71FC2325ED2300632CB7 = {
 			isa = PBXGroup;
 			children = (
 				22FA72072325ED2300632CB7 /* HelloWindow */,
-				221B691F232FD8680070DE51 /* Shaders */,
+				22F8F9752337909A00408B4A /* Images */,
+				221B691F232FD8680070DE51 /* Headers */,
 				22FA720F2325ED7B00632CB7 /* Frameworks */,
 				22FA72062325ED2300632CB7 /* Products */,
 			);
@@ -84,6 +100,9 @@
 				22FA72162325EDA100632CB7 /* glad.c */,
 				22FA72082325ED2300632CB7 /* main.cpp */,
 				221B6923232FDAD40070DE51 /* VertexShader.glsl */,
+				22C86C6B2333381100FFF73A /* TextureVertexShader.glsl */,
+				22C86C6C2333382900FFF73A /* TextureFragmentShader.glsl */,
+				22C86C69233334EA00FFF73A /* HeaderProc.cpp */,
 				221B6924232FDAFA0070DE51 /* FragmentShader.glsl */,
 			);
 			path = HelloWindow;
@@ -157,6 +176,7 @@
 			files = (
 				22FA72092325ED2300632CB7 /* main.cpp in Sources */,
 				22FA72172325EDA100632CB7 /* glad.c in Sources */,
+				22C86C6A233334EA00FFF73A /* HeaderProc.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

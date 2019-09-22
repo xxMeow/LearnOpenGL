@@ -12,7 +12,8 @@
 #include <iostream>
 #include <cmath>
 
-#include "../Shaders/Shader.h"
+#include "../Headers/Shader.h"
+#include "../Headers/stb_image.h"
 
 using namespace std;
 
@@ -60,20 +61,22 @@ int main(int argc, const char *argv[])
     }
     
     /** Bulid and compile shaders **/
-    Shader ourShader("VertexShader.glsl", "FragmentShader.glsl");
+    Shader ourShader("TextureVertexShader.glsl", "TextureFragmentShader.glsl");
     
     /** Setup vertex data **/
     // Define vertices
     // Each vertex includes 3 coordinates (x, y, z:depth), the middle point of space is (0.0, 0.0, 0.0)
     float vertices[] = {
-        // Position          // Color
-         0.5f, -0.5f, 0.0f,  0.8f, 0.0f, 0.0f, // Right
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.8f, 0.0f, // Left
-         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 0.8f  // Top
+        // Positions          // Colors           // Texture Coords
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
     };
     // Define the indices of vertices we want
     unsigned int indices[] = {
-        0, 1, 2 // Triangle
+        0, 1, 3, // Triangle1
+        1, 2, 3  // Triangle2
     };
     
     unsigned int VAO, VBO, EBO;
@@ -95,11 +98,37 @@ int main(int argc, const char *argv[])
      *  void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid * pointer);
      **/
     // Position Pointer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // Color Pointer
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    // Texture Coordinate Pointer
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    
+    /** Load Texture **/
+    // Assign texture ID and gengeration
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // Set the texture wrapping parameters (for 2D tex: S, T)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering parameters (Minify, Magnify)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    /** Load image and configure texture **/
+    int width, height, colorChannels; // After loading the image, stb_image will fill them
+    unsigned char *data = stbi_load("../Images/container.jpg", &width, &height, &colorChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D); // Automatically generate all the required mipmaps for the currently bound texture.
+    } else {
+        cout << "Failed to load texture" << endl;
+    }
+    // Always free image memory
+    stbi_image_free(data);
     
     /** Unbind **/
     // Since glAttribArrayPointer() has registered VBO as the vertex attributes' bound vertex buffer object, now we can unbind it safely
@@ -121,6 +150,9 @@ int main(int argc, const char *argv[])
         // Set background clolor
         glClearColor(0.2f, 0.2f, 0.5f, 0.2f); // Set color value (R,G,B,A) - Set Status
         glClear(GL_COLOR_BUFFER_BIT); // Use the color to clear screen - Use Status
+        
+        /** Bind texture **/
+        glBindTexture(GL_TEXTURE_2D, texture);
         
         /** Render triangle **/
         ourShader.use();
