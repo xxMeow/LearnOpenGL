@@ -61,7 +61,7 @@ int main(int argc, const char *argv[])
     }
     
     /** Bulid and compile shaders **/
-    Shader ourShader("TextureVertexShader.glsl", "TextureFragmentShader.glsl");
+    Shader ourShader("../Shaders/TextureVertexShader.glsl", "../Shaders/TextureFragmentShader.glsl");
     
     /** Setup vertex data **/
     // Define vertices
@@ -153,6 +153,7 @@ int main(int argc, const char *argv[])
         
         /** Bind texture **/
         glBindTexture(GL_TEXTURE_2D, texture);
+        // Same as the VAO, we actuall don't need to bind it since we only have a single texture
         
         /** Render triangle **/
         ourShader.use();
