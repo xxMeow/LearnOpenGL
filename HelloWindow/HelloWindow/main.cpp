@@ -107,11 +107,11 @@ int main(int argc, const char *argv[])
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
     
-    /** Load Texture **/
+    /** Load 1st texture **/
     // Assign texture ID and gengeration
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    unsigned int texture1;
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
     // Set the texture wrapping parameters (for 2D tex: S, T)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -119,6 +119,7 @@ int main(int argc, const char *argv[])
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     /** Load image and configure texture **/
+    stbi_set_flip_vertically_on_load(true);
     int width, height, colorChannels; // After loading the image, stb_image will fill them
     unsigned char *data = stbi_load("../Images/container.jpg", &width, &height, &colorChannels, 0);
     if (data) {
@@ -129,6 +130,30 @@ int main(int argc, const char *argv[])
     }
     // Always free image memory
     stbi_image_free(data);
+    
+    /** Load 2nd texture **/
+    unsigned int texture2;
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    data = stbi_load("../Images/awesomeface.png", &width, &height, &colorChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D); // Automatically generate all the required mipmaps for the currently bound texture.
+        cout << "Face loaded." << endl;
+    } else {
+        cout << "Failed to load texture" << endl;
+    }
+    stbi_image_free(data);
+    
+    /** Set uniform **/
+    ourShader.use(); // Active shader before set uniform
+    // Tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+    ourShader.setInt("tex1", 0);
+    ourShader.setInt("tex2", 1);
     
     /** Unbind **/
     // Since glAttribArrayPointer() has registered VBO as the vertex attributes' bound vertex buffer object, now we can unbind it safely
@@ -151,9 +176,12 @@ int main(int argc, const char *argv[])
         glClearColor(0.2f, 0.2f, 0.5f, 0.2f); // Set color value (R,G,B,A) - Set Status
         glClear(GL_COLOR_BUFFER_BIT); // Use the color to clear screen - Use Status
         
-        /** Bind texture **/
-        glBindTexture(GL_TEXTURE_2D, texture);
-        // Same as the VAO, we actuall don't need to bind it since we only have a single texture
+        /** Bind texture on corresponding texture units **/
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+        // Same as the VAO, we actuall don't need to bind it since we only have a single texture (fot each texture unit)
         
         /** Render triangle **/
         ourShader.use();

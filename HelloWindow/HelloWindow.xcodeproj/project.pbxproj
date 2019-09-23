@@ -36,6 +36,7 @@
 		22C86C6C2333382900FFF73A /* TextureFragmentShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = TextureFragmentShader.glsl; sourceTree = "<group>"; };
 		22F8F97323377BCD00408B4A /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 		22F8F976233790B900408B4A /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
+		22F8F9782337D80D00408B4A /* awesomeface.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = awesomeface.png; sourceTree = "<group>"; };
 		22FA72052325ED2300632CB7 /* HelloWindow */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HelloWindow; sourceTree = BUILT_PRODUCTS_DIR; };
 		22FA72082325ED2300632CB7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		22FA72102325ED7B00632CB7 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -71,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				22F8F976233790B900408B4A /* container.jpg */,
+				22F8F9782337D80D00408B4A /* awesomeface.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
