@@ -16,8 +16,10 @@ in vec2 texCoord;
 // Texture Samplers
 uniform sampler2D tex1, tex2;
 
+uniform float mixRatio;
+
 void main()
 {
-    FragColor = mix(texture(tex1, texCoord), texture(tex2, texCoord), 0.2) * vec4(ourColor, 1.0);
+    FragColor = mix(texture(tex1, texCoord) * vec4(ourColor, 1.0), texture(tex2, texCoord), mixRatio);
     // texture() will output the color obtained by sampling the texture with configured conditions
 }

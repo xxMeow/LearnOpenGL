@@ -20,6 +20,8 @@ using namespace std;
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
+float mixRatio = 0.2f;
+
 // A callback function that will be called each time the size of window changed
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -183,6 +185,8 @@ int main(int argc, const char *argv[])
         glBindTexture(GL_TEXTURE_2D, texture2);
         // Same as the VAO, we actuall don't need to bind it since we only have a single texture (fot each texture unit)
         
+        ourShader.setFloat("mixRatio", mixRatio);
+        
         /** Render triangle **/
         ourShader.use();
         
@@ -223,5 +227,11 @@ void processInput(GLFWwindow *window)
     // Check if key ESCAPE is pressed
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { // If key did not get pressed it will return GLFW_RELEASE
         glfwSetWindowShouldClose(window, true);
+    }
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        mixRatio += 0.0002f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        mixRatio -= 0.0002f;
     }
 }
