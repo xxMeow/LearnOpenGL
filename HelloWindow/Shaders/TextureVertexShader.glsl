@@ -15,9 +15,11 @@ layout (location = 2) in vec2 aTexCoord;
 out vec3 ourColor;
 out vec2 texCoord;
 
+uniform mat4 transMatrix;
+
 void main()
 {
-    gl_Position = vec4(aPos, 1.0);
+    gl_Position = transMatrix * vec4(aPos, 1.0f);
     ourColor = aColor;
     texCoord = vec2(aTexCoord.x, aTexCoord.y);
 }
