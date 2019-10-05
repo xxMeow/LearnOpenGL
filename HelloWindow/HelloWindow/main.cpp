@@ -69,49 +69,88 @@ int main(int argc, const char *argv[])
     /** Bulid and compile shaders **/
     Shader ourShader("../Shaders/CoordSysVertexShader.glsl", "../Shaders/CoordSysFragmentShader.glsl");
     
-    /** Setup vertex data **/
-    // Define vertices
+    /** Setup cube's vertex data **/
+    // Define vertices of a 3D cube
     // Each vertex includes 3 coordinates (x, y, z:depth), the middle point of space is (0.0, 0.0, 0.0)
-    float vertices[] = {
-        // Positions          // Colors           // Texture Coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
-    };
-    // Define the indices of vertices we want
-    unsigned int indices[] = {
-        0, 1, 3, // Triangle1
-        1, 2, 3  // Triangle2
+    float cubeVertices[] = {
+        // Coordinate         // Texture
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
     
-    unsigned int VAO, VBO, EBO;
+    /** Position information of cubes **/
+    glm::vec3 cubePositions[] = {
+      glm::vec3( 0.0f,  0.0f,  0.0f),
+      glm::vec3( 2.0f,  5.0f, -15.0f),
+      glm::vec3(-1.5f, -2.2f, -2.5f),
+      glm::vec3(-3.8f, -2.0f, -12.3f),
+      glm::vec3( 2.4f, -0.4f, -3.5f),
+      glm::vec3(-1.7f,  3.0f, -7.5f),
+      glm::vec3( 1.3f, -2.0f, -2.5f),
+      glm::vec3( 1.5f,  2.0f, -2.5f),
+      glm::vec3( 1.5f,  0.2f, -1.5f),
+      glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+    
+    unsigned int VAO, VBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
     
     // Bind the VAO
     glBindVertexArray(VAO);
     // Bind the VBO
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // glBufferData() will copy datas to the buffer which is being bound right now
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    // Bind the EBO
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
     
     /** glVertexAttribPointer() will get each vertex attributes from the VBO
      *  void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid * pointer);
      **/
     // Position Pointer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // Color Pointer
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
     // Texture Coordinate Pointer
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
     
     /** Load 1st texture **/
     // Assign texture ID and gengeration
@@ -171,6 +210,13 @@ int main(int argc, const char *argv[])
     // Uncomment this call to draw in wireframe polygons
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Option: GL_FILL(default), GL_POINT, GL_LINE
     
+    glEnable(GL_DEPTH_TEST);
+    
+    // Set projMatrix : Since projection matrix rarely changes, set it outside the rendering loop for only onec time
+    glm::mat4 projMatrix = glm::mat4(1.0f);
+    projMatrix = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 0.1f, 100.0f);
+    ourShader.setMat4("projMatrix", projMatrix);
+    
     // Render loop
     while (!glfwWindowShouldClose(window)) {
         // Check for events
@@ -180,7 +226,7 @@ int main(int argc, const char *argv[])
         
         // Set background clolor
         glClearColor(0.2f, 0.2f, 0.5f, 0.2f); // Set color value (R,G,B,A) - Set Status
-        glClear(GL_COLOR_BUFFER_BIT); // Use the color to clear screen - Use Status
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Use the color to clear screen - Use Status
         
         /** Bind texture on corresponding texture units **/
         glActiveTexture(GL_TEXTURE0);
@@ -189,32 +235,32 @@ int main(int argc, const char *argv[])
         glBindTexture(GL_TEXTURE_2D, texture2);
         // Same as the VAO, we actuall don't need to bind it since we only have a single texture (fot each texture unit)
         
-        /** Create coordinate transformation matrix **/
-        // Initialize them as identity matrix
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
+        // Set viewMatrix
         glm::mat4 viewMatrix = glm::mat4(1.0f);
-        glm::mat4 projMatrix = glm::mat4(1.0f);
-        // Set matrices
-        modelMatrix = glm::rotate(modelMatrix, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
-        projMatrix = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 0.1f, 100.0f);
+        ourShader.setMat4("viewMatrix", viewMatrix);
         
         ourShader.setFloat("mixRatio", mixRatio);
         
         /** Active shader **/
         ourShader.use();
         
-        /** Set uniforms **/
-        ourShader.setMat4("modelMatrix", modelMatrix);
-        ourShader.setMat4("viewMatrix", viewMatrix);
-        ourShader.setMat4("projMatrix", projMatrix);
-        // Actually since projMatrix rarely changes it's often best practice to set it outside the main loop only once
-        
         glBindVertexArray(VAO);
         // In fact, we don't need to bind the VAO every render loop here since we only have a single VAO. We just do it so to keep things a bit organized
         
-        // Tell OpenGL to draw 6 vertices whose indices are stored in the VBO
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // Set modelMatrix and draw cubes
+        glm::mat4 modelMatrix = glm::mat4(1.0f);
+        ourShader.setMat4("modelMatrix", modelMatrix);
+        for (int i = 0; i < 10; i ++) {
+            float radian = (float)glfwGetTime() * glm::radians(30.0f + 10.0f * i);
+            modelMatrix = glm::mat4(1.0f);
+            modelMatrix = glm::translate(modelMatrix, cubePositions[i]);
+            modelMatrix = glm::rotate(modelMatrix, radian, glm::vec3(0.5f, 0.5f, 0.0f));
+            ourShader.setMat4("modelMatrix", modelMatrix);
+            
+            // Tell OpenGL to draw 36 vertices
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
         // glDrawElements() will access the elements in the VAO which is being bound right now
         
         //glBindVertexArray(0); // Again, we don't need to unbind it right now
@@ -229,7 +275,6 @@ int main(int argc, const char *argv[])
     // Optional: De-allocate all resources once they've outlived their purpoose
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
     
     glfwTerminate();
     
