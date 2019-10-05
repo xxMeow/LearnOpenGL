@@ -67,7 +67,7 @@ int main(int argc, const char *argv[])
     }
     
     /** Bulid and compile shaders **/
-    Shader ourShader("../Shaders/TextureVertexShader.glsl", "../Shaders/TextureFragmentShader.glsl");
+    Shader ourShader("../Shaders/CoordSysVertexShader.glsl", "../Shaders/CoordSysFragmentShader.glsl");
     
     /** Setup vertex data **/
     // Define vertices
@@ -189,20 +189,26 @@ int main(int argc, const char *argv[])
         glBindTexture(GL_TEXTURE_2D, texture2);
         // Same as the VAO, we actuall don't need to bind it since we only have a single texture (fot each texture unit)
         
-        /** Create transformation matrix **/
-        glm::mat4 trans = glm::mat4(1.0f); // Initialize the matrix as an identity matrix
-        glm::vec3 axis = glm::vec3(1.0f, 1.0f, 0.0f);
-        trans = glm::rotate(trans, (float)glfwGetTime(), axis); // 90 degrees rotation around the z-axis
-        trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+        /** Create coordinate transformation matrix **/
+        // Initialize them as identity matrix
+        glm::mat4 modelMatrix = glm::mat4(1.0f);
+        glm::mat4 viewMatrix = glm::mat4(1.0f);
+        glm::mat4 projMatrix = glm::mat4(1.0f);
+        // Set matrices
+        modelMatrix = glm::rotate(modelMatrix, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+        projMatrix = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 0.1f, 100.0f);
         
         ourShader.setFloat("mixRatio", mixRatio);
         
-        /** Render triangle **/
+        /** Active shader **/
         ourShader.use();
         
-        // Pass transformation matrix to shader
-        unsigned int transMatrixLocation = glGetUniformLocation(ourShader.ID, "transMatrix");
-        glUniformMatrix4fv(transMatrixLocation, 1, GL_FALSE, glm::value_ptr(trans));
+        /** Set uniforms **/
+        ourShader.setMat4("modelMatrix", modelMatrix);
+        ourShader.setMat4("viewMatrix", viewMatrix);
+        ourShader.setMat4("projMatrix", projMatrix);
+        // Actually since projMatrix rarely changes it's often best practice to set it outside the main loop only once
         
         glBindVertexArray(VAO);
         // In fact, we don't need to bind the VAO every render loop here since we only have a single VAO. We just do it so to keep things a bit organized
