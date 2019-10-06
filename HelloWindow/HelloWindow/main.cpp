@@ -26,6 +26,10 @@ using namespace std;
 
 float mixRatio = 0.2f;
 
+glm::vec3 camPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
 // A callback function that will be called each time the size of window changed
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -212,7 +216,8 @@ int main(int argc, const char *argv[])
     
     glEnable(GL_DEPTH_TEST);
     
-    // Set projMatrix : Since projection matrix rarely changes, set it outside the rendering loop for only onec time
+    /** Projection Matrix : The frustum that camera observes **/
+    // Since projection matrix rarely changes, set it outside the rendering loop for only onec time
     glm::mat4 projMatrix = glm::mat4(1.0f);
     projMatrix = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 0.1f, 100.0f);
     ourShader.setMat4("projMatrix", projMatrix);
@@ -235,9 +240,9 @@ int main(int argc, const char *argv[])
         glBindTexture(GL_TEXTURE_2D, texture2);
         // Same as the VAO, we actuall don't need to bind it since we only have a single texture (fot each texture unit)
         
-        // Set viewMatrix
+        /** View Matrix : The camera **/
         glm::mat4 viewMatrix = glm::mat4(1.0f);
-        viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+        viewMatrix = glm::lookAt(camPosition, camPosition + camFront, camUp);
         ourShader.setMat4("viewMatrix", viewMatrix);
         
         ourShader.setFloat("mixRatio", mixRatio);
@@ -248,9 +253,8 @@ int main(int argc, const char *argv[])
         glBindVertexArray(VAO);
         // In fact, we don't need to bind the VAO every render loop here since we only have a single VAO. We just do it so to keep things a bit organized
         
-        // Set modelMatrix and draw cubes
+        /** Model Matrix : Put cubes into the world **/
         glm::mat4 modelMatrix = glm::mat4(1.0f);
-        ourShader.setMat4("modelMatrix", modelMatrix);
         for (int i = 0; i < 10; i ++) {
             float radian = (float)glfwGetTime() * glm::radians(30.0f + 10.0f * i);
             modelMatrix = glm::mat4(1.0f);
@@ -258,7 +262,7 @@ int main(int argc, const char *argv[])
             modelMatrix = glm::rotate(modelMatrix, radian, glm::vec3(0.5f, 0.5f, 0.0f));
             ourShader.setMat4("modelMatrix", modelMatrix);
             
-            // Tell OpenGL to draw 36 vertices
+            // Draw cubes
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         // glDrawElements() will access the elements in the VAO which is being bound right now
@@ -289,14 +293,31 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 void processInput(GLFWwindow *window)
 {
-    // Check if key ESCAPE is pressed
+    /** Window control : [ESC] **/
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { // If key did not get pressed it will return GLFW_RELEASE
         glfwSetWindowShouldClose(window, true);
     }
+    
+    /** MixRation control : [UP] [Down] **/
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
         mixRatio += 0.0002f;
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
         mixRatio -= 0.0002f;
+    }
+    
+    /** Camera control : [W] [S] [A] [D] **/
+    float camSpeed = 0.005f;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        camPosition += camSpeed * camFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        camPosition -= camSpeed * camFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        camPosition -= glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        camPosition += glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
     }
 }
